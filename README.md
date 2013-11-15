@@ -10,23 +10,23 @@ Ruby >= 1.9.1 is required.
 
 Install the latest RubyGem from RubyGems.org:
 
-  `gem install rightscale-cli`
+    gem install rightscale-cli
 
 For more information, see https://rubygems.org/gems/rightscale-cli.
 
 ### Mac OS X, FreeBSD
 
-The executable, 'rs' will conflict with RS(1) on Mac OS X (http://www.freebsd.org/cgi/man.cgi?query=rs&sektion=1&apropos=0&manpath=freebsd)
+The executable, `rs` will conflict with RS(1) on Mac OS X (http://www.freebsd.org/cgi/man.cgi?query=rs&sektion=1&apropos=0&manpath=freebsd).
 
-As a result, to avoid overwriting the `/usr/bin/rs` binary, use a different location in your `~/.gemrc` or `/etc/gemrc`:
+As a result, to avoid overwriting the `/usr/bin/rs` binary, use a different location in your `~/.gemrc` or `/etc/gemrc`, for example:
 
-    `gem: --bindir /usr/local/bin`
+    gem: --bindir /usr/local/bin
     
 ## License and Authors
 
 * Author:: Chris Fordham <chris [at] fordham [hyphon] nagy [dot] id [dot] au>
 
-* Copyright:: 2011-2013, Chris Fordham
+* Copyright:: 2013, Chris Fordham
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
