@@ -1,13 +1,13 @@
 Gem::Specification.new do |s|
   s.name        = 'rightscale-cli'
-  s.version     = '0.1.0'
+  s.version     = '0.1.1'
   s.date        = '2013-11-15'
   s.summary     = "rightscale-cli"
   s.description = "RightScale command line interface client."
   s.authors     = ["Chris Fordham"]
   s.email       = 'chris@fordham-nagy.id.au'
   s.licenses    = ['Apache 2.0']
-  s.files       = Dir['lib/*.rb'] 
+  s.files       = Dir['{bin,lib}/**/*', 'README*', 'LICENSE*'] 
   s.bindir      = 'bin'
   s.executables = Dir.entries(s.bindir) - [".", "..", '.gitignore']
   s.homepage    = 'https://github.com/flaccid/rightscale-cli'
