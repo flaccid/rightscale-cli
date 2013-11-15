@@ -1,4 +1,4 @@
 rightscale-cli
 ==============
 
-RightScale CLI client
+RightScale CLI client. Currently in early development stages.
