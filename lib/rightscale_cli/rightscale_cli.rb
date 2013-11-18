@@ -16,9 +16,11 @@
 
 require 'thor'
 require 'rightscale_cli/clouds'
+require 'rightscale_cli/dashboard'
 require 'rightscale_cli/deployments'
 require 'rightscale_cli/servers'
 require 'rightscale_cli/server_arrays'
+require 'rightscale_cli/server_templates'
 
 # http://stackoverflow.com/questions/5663519/namespacing-thor-commands-in-a-standalone-ruby-executable
 
@@ -31,8 +33,10 @@ class RightScaleCLI
     class_option :dry, :type => :boolean, :default => false, :desc => 'Dry-run only.'
     
     register(Clouds, 'clouds', 'clouds <command>', 'Query clouds.')
+    register(Dashboard, 'dashboard', 'dashboard <command>', 'RightScale Dashboard (HTTP hax).')
     register(ServerArrays, 'arrays', 'arrays <command>', 'Manage server arrays.')
     register(Deployments, 'deployments', 'deployments <command>', 'Manage deployments.')
     register(Servers, 'servers', 'servers <command>', 'Manage servers.')
+    register(ServerTemplates, 'server_templates', 'server-templates <command>', 'Manage ServerTemplates.')
   end
 end
