@@ -40,6 +40,21 @@ class RightScaleCLI
       puts response.body
     end
 
+    desc "scrape", "Scrape a dashboard URL by href"
+    def scrape(href)
+      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
+
+      uri = URI.parse("#{rightscale.api_url}#{href}")
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request.add_field("Cookie", rightscale.last_request[:request].headers[:cookie])
+
+      response = http.request(request)
+      puts response.body
+    end
+    
     def self.banner(task, namespace = true, subcommand = false)
       "#{basename} #{task.formatted_usage(self, true, subcommand)}"
     end
