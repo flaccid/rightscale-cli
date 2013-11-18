@@ -16,4 +16,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'right_api_client'
   s.add_dependency 'octokit'
   s.add_dependency 'thor'
+  s.add_dependency 'nokogiri'
 end
