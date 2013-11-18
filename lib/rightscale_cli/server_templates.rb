@@ -89,7 +89,7 @@ class RightScaleCLI
       request = Net::HTTP::Get.new(uri.request_uri)
       request.add_field("Referer", "#{rightscale.api_url}/acct/#{rightscale.account_id}/server_templates/#{server_template_id}")
       request.add_field("X-Requested-With", "XMLHttpRequest")
-      request.add_field("Cookie", YAML.load_file(File.join(ENV['HOME'], '.rightscale', 'right_api_client.yml'))[:dashboard_cookies])
+      request.add_field("Cookie", rightscale.last_request[:request].headers[:cookie])
       response = http.request(request)
       puts response.body if options[:debug]
 
@@ -101,7 +101,7 @@ class RightScaleCLI
         input['name'] = input_html.css('div')[0].text.gsub!(/\s+/, "")
         input['possible_values'] = []
         input_html.css('div[class=inputValue]').css('select[class=possible_values] option').each { |option|
-          input['default'] = option['value'] if option['selected'] == 'selected'
+          input['current'] = option['value'] if option['selected'] == 'selected'
           input['possible_values'].push(option['value'])
         }
         inputs.push(input)

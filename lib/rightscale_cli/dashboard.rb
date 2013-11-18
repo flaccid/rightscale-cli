@@ -28,12 +28,14 @@ class RightScaleCLI
     desc "overview", "RightScale Dashboard Overview."
     def overview()
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
+
       uri = URI.parse("#{rightscale.api_url}/acct/#{rightscale.account_id}/dashboard;overview")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       request = Net::HTTP::Get.new(uri.request_uri)
-      request.add_field("Cookie", YAML.load_file(File.join(ENV['HOME'], '.rightscale', 'right_api_client.yml'))[:dashboard_cookies])
+      request.add_field("Cookie", rightscale.last_request[:request].headers[:cookie])
+
       response = http.request(request)
       puts response.body
     end
