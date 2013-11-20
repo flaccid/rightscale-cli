@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require 'thor'
+require 'rightscale_cli/output'
 require 'rightscale_cli/clouds'
 require 'rightscale_cli/dashboard'
 require 'rightscale_cli/deployments'
