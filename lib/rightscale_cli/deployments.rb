@@ -22,10 +22,8 @@ class RightScaleCLI
   class Deployments < Thor
     namespace :deployments
     
-    desc "show", "Lists all deployments."
-    def show()
-      option :xml, :type => :boolean, :default => false, :aliases => '-X', :desc => 'Return XML.'
-      
+    desc "list", "Lists all deployments."
+    def list()
       deployments = Array.new
       RightApi::Client.new(RightScaleCLI::Config::API).deployments.index.each { |deployment|
         deployments.push(deployment.raw)
