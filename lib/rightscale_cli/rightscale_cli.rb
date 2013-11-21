@@ -19,6 +19,7 @@ require 'rightscale_cli/output'
 require 'rightscale_cli/clouds'
 require 'rightscale_cli/dashboard'
 require 'rightscale_cli/deployments'
+require 'rightscale_cli/instances'
 require 'rightscale_cli/servers'
 require 'rightscale_cli/server_arrays'
 require 'rightscale_cli/server_templates'
@@ -37,6 +38,7 @@ class RightScaleCLI
     register(Dashboard, 'dashboard', 'dashboard <command>', 'RightScale Dashboard (HTTP hax).')
     register(ServerArrays, 'arrays', 'arrays <command>', 'Manage server arrays.')
     register(Deployments, 'deployments', 'deployments <command>', 'Manage deployments.')
+    register(Instances, 'instances', 'instances <command>', 'Manage instances.')
     register(Servers, 'servers', 'servers <command>', 'Manage servers.')
     register(ServerTemplates, 'server_templates', 'server-templates <command>', 'Manage ServerTemplates.')
   end
