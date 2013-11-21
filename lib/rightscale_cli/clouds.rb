@@ -18,7 +18,6 @@ require 'thor'
 require 'yaml'
 require 'json'
 require "active_support/core_ext"
-require 'rightscale_cli/logger'
 
 class RightScaleCLI
   class Clouds < Thor
@@ -28,6 +27,9 @@ class RightScaleCLI
     def list()
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
       clouds = []
+
+      $log.info "Retrieving all clouds from #{rightscale.account_id}."
+
       rightscale.clouds.index.each { |cloud|
         clouds.push(cloud.raw)
       }  
@@ -46,14 +48,13 @@ class RightScaleCLI
     option :cloud_type, :type => :string, :required => false
     option :description, :type => :string, :required => false
     def search()
-      log = CLILogger.new
 
       filter = []
       filter.push("name==#{options[:name]}") if options[:name]
       filter.push("cloud_type==#{options[:cloud_type]}") if options[:cloud_type]
       filter.push("description==#{options[:cloud]}") if options[:description]
 
-      log.info("Searching for clouds!")
+      $log.info "Searching for clouds!"
 
       puts "filter: #{filter}" if options[:debug]
       

@@ -20,7 +20,6 @@ class RightScaleCLI
     desc "run_exec", "Runs a RightScript or Chef recipe on the array instances."
 
     def run_exec(server_array_id, exec_type, exec_identifier)
-      log = CLILogger.new
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
 
       params = {}
@@ -33,8 +32,8 @@ class RightScaleCLI
       
       server_array = rightscale.server_arrays(:id => server_array_id)
 
-      log.info "params: #{params}" if options[:debug]
-      log.info "Running executable on server array."
+      $log.info "params: #{params}" if options[:debug]
+      $log.info "Running executable on server array."
 
       server_array.multi_run_executable(params)
     end

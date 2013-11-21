@@ -30,7 +30,6 @@ class RightScaleCLI
     
     desc "list", "Lists ServerTemplates."
     def list()
-      log = CLILogger.new
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
       server_templates = []
       rightscale.server_templates.index.each { |server_template|
@@ -48,7 +47,6 @@ class RightScaleCLI
     
     desc "show", "Shows a ServerTemplate."
     def show(server_template_id)
-      log = CLILogger.new
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
 
       server_template = rightscale.server_templates(:id => server_template_id).show.raw
@@ -64,7 +62,6 @@ class RightScaleCLI
 
     desc "inputs", "Shows a ServerTemplate's inputs."
     def inputs(server_template_id)
-      log = CLILogger.new
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
 
       server_template_inputs = []      

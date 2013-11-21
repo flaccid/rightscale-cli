@@ -35,7 +35,6 @@ class RightScaleCLI
     option :state, :desc => 'The state of Instances to filter on.', :type => :string, :required => false
 
     def instances(server_array_id)
-      log = CLILogger.new
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
 
       array_instances = []
@@ -54,7 +53,7 @@ class RightScaleCLI
       filter.push("server_template_href==#{options[:server_template]}") if options[:server_template]
       filter.push("state==#{options[:state]}") if options[:state]
 
-      log.info "filter: #{filter}" if options[:debug]
+      $log.debug "filter: #{filter}" if options[:debug]
 
       rightscale.server_arrays(:id => server_array_id).show.current_instances(:filter => filter).index.each { |array_instance|
         array_instances.push(array_instance.raw)

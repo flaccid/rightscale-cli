@@ -39,7 +39,6 @@ class RightScaleCLI
     option :deployment, :type => :string, :required => false
     option :name, :type => :string, :required => false
     def list()
-      log = CLILogger.new
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
   
       filter = []
@@ -47,7 +46,7 @@ class RightScaleCLI
       filter.push("deployment_href==/api/deployments/#{options[:cloud]}") if options[:deployment]
       filter.push("name==#{options[:name]}") if options[:name]
 
-      log.info "filter: #{filter}" if options[:debug]
+      $log.debug "filter: #{filter}" if options[:debug]
       
       server_arrays = []
       rightscale.server_arrays.index(:filter => filter).each { |server_array|
@@ -65,7 +64,6 @@ class RightScaleCLI
 
     desc "show", "Shows a server array."
     def show(server_array_id)
-      log = CLILogger.new
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
 
       server_array = rightscale.server_arrays(:id => server_array_id).show.raw
@@ -81,40 +79,35 @@ class RightScaleCLI
     
     desc "state", "Shows the state of a server array."
     def state(server_array_id)
-      log = CLILogger.new
-      log.info "Retrieving state for server array, #{server_array_id}."
+      $log.info "Retrieving state for server array, #{server_array_id}."
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
       puts rightscale.server_arrays(:id => server_array_id).show.state
     end
 
     desc "instances_count", "Shows the instances count of a server array."
     def instances_count(server_array_id)
-      log = CLILogger.new
-      log.info "Retrieving instances count for server array, #{server_array_id}."
+      $log.info "Retrieving instances count for server array, #{server_array_id}."
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
       puts rightscale.server_arrays(:id => server_array_id).show.instances_count
     end
 
     desc "desc", "Shows the description of a server array."
     def desc(server_array_id)
-      log = CLILogger.new
-      log.info "Retrieving description for server array, #{server_array_id}."
+      $log.info "Retrieving description for server array, #{server_array_id}."
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
       puts rightscale.server_arrays(:id => server_array_id).show.description
     end
 
     desc "name", "Shows the name of a server array."
     def name(server_array_id)
-      log = CLILogger.new
-      log.info "Retrieving name for server array, #{server_array_id}."
+      $log.info "Retrieving name for server array, #{server_array_id}."
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
       puts rightscale.server_arrays(:id => server_array_id).show.name
     end
     
     desc "api_methods", "Lists the API methods available to a server array."
     def api_methods(server_array_id)
-      log = CLILogger.new
-      log.info "Retrieving API methods for server array, #{server_array_id}."
+      $log.info "Retrieving API methods for server array, #{server_array_id}."
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
       server_array = rightscale.server_arrays(:id => server_array_id).show.api_methods
       puts server_array
