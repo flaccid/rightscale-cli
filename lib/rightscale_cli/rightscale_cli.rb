@@ -23,6 +23,7 @@ require 'rightscale_cli/instances'
 require 'rightscale_cli/servers'
 require 'rightscale_cli/server_arrays'
 require 'rightscale_cli/server_templates'
+require 'rightscale_cli/volumes'
 
 # http://stackoverflow.com/questions/5663519/namespacing-thor-commands-in-a-standalone-ruby-executable
 
@@ -41,5 +42,6 @@ class RightScaleCLI
     register(Instances, 'instances', 'instances <command>', 'Manage instances.')
     register(Servers, 'servers', 'servers <command>', 'Manage servers.')
     register(ServerTemplates, 'server_templates', 'server-templates <command>', 'Manage ServerTemplates.')
+    register(Volumes, 'volumes', 'volumes <command>', 'Manage volumes.')
   end
 end
