@@ -21,7 +21,15 @@ The executable, `rs` will conflict with RS(1) on Mac OS X (http://www.freebsd.or
 As a result, to avoid overwriting the `/usr/bin/rs` binary, use a different location in your `~/.gemrc` or `/etc/gemrc`, for example:
 
     gem: --bindir /usr/local/bin
-    
+
+## Usage
+
+There is one command, `rs`.
+
+ * For a list of commands, type `rs help`
+ * For a list of subcommands, type `rs <namespace> help`, e.g. `rs arrays help`
+ * For usage options of a subcommand, type `rs <namespace> help <subcommand>`, e.g. `rs arrays help instances`
+
 ## License and Authors
 
 * Author:: Chris Fordham <chris [at] fordham [hyphon] nagy [dot] id [dot] au>
