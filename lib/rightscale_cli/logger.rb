@@ -30,5 +30,5 @@ unless defined? $log
     $log = Logger.new(STDOUT)
     log_init_msg += 'STDOUT'
   end
-  $log.info log_init_msg
+  #$log.info log_init_msg
 end
