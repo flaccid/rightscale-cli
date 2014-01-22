@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'rightscale-cli'
-  s.version     = '0.3.0'
-  s.date        = '2013-11-21'
+  s.version     = '0.4.0'
+  s.date        = '2014-01-22'
   s.summary     = "rightscale-cli"
   s.description = "RightScale command line interface client."
   s.authors     = ["Chris Fordham"]
