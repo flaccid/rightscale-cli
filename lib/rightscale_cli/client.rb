@@ -22,8 +22,13 @@ class RightScaleCLI
   class Client
     attr_accessor :render
     
-    def initialize(*args)
-      @client = RightApi::Client.new(RightScaleCLI::Config::API)
+    def initialize(options)
+      config = RightScaleCLI::Config::API
+      config[:account_id] = options['account'] if options[:account]
+      config[:api_version] = options['api'] if options[:api]
+
+      @options = options
+      @client = RightApi::Client.new(config)
       @logger = RightScaleCLI::Logger.new()
     end
 
@@ -46,8 +51,8 @@ class RightScaleCLI
       @logger.info("Deleted #{resource.href}.")
     end
 
-    def render(data, root_element, options)
-      RightScaleCLI::Output.render(data, root_element, options)
+    def render(data, root_element)
+      RightScaleCLI::Output.render(data, root_element, @options)
     end
   end
 end

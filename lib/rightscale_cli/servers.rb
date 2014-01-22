@@ -16,19 +16,24 @@
 
 require 'thor'
 require 'yaml'
-require 'right_api_client'
+require 'rightscale_cli/client'
       
 class RightScaleCLI
   class Servers < Thor
     namespace :servers
 
-    desc "show", "Lists all servers."
-    def show()
-      servers = Array.new
-      RightApi::Client.new(RightScaleCLI::Config::API).servers.index.each { |deployment|
-        servers.push(deployment.raw)
-      }  
-      puts servers.to_yaml
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
+    # include render options
+    eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
+    
+    desc "list", "Lists all servers."
+    def list()
+      @client.render(@client.get('servers'), 'servers')
     end
 
     desc "create", "Creates a server."

@@ -26,7 +26,7 @@ class RightScaleCLI
 
     def initialize(*args)
       super
-      @client = RightScaleCLI::Client.new()
+      @client = RightScaleCLI::Client.new(options)
       @logger = RightScaleCLI::Logger.new()
     end
 
@@ -36,7 +36,7 @@ class RightScaleCLI
     desc "list", "Lists all MultiCloud Images."
     def list()
       @logger.info('Retrieving all MultiCloud Images...')
-      @client.render(@client.get('multi_cloud_images'), 'multi_cloud_images', options)
+      @client.render(@client.get('multi_cloud_images'), 'multi_cloud_images')
     end
 
     desc "create", "Creates a MultiCloud Image."
