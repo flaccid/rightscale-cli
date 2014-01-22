@@ -22,6 +22,13 @@ As a result, to avoid overwriting the `/usr/bin/rs` binary, use a different loca
 
     gem: --bindir /usr/local/bin
 
+## Configuration
+
+Setup `~/.rightscale/right_api_client.yml` with your RightScale credentials.
+Ensure the correct shard is for your account is set with `:api_url`.
+
+An example file is available, https://github.com/rightscale/right_api_client/blob/master/config/login.yml.example.
+
 ## Usage
 
 There is one command, `rs`.
