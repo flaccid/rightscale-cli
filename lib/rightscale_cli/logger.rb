@@ -15,20 +15,43 @@
 # limitations under the License.
 
 require 'logger'
+require 'rightscale_cli/config'
 
-unless defined? $log
-  log_init_msg = 'Initializing Logging using '
-  if ENV['RIGHT_API_CLIENT_LOG']
-    if File.exists?(ENV['RIGHT_API_CLIENT_LOG'])
-      file = File.open(ENV['RIGHT_API_CLIENT_LOG'], File::WRONLY | File::APPEND)
-    else
-      file = ENV['RIGHT_API_CLIENT_LOG']
+class RightScaleCLI
+  class Logger
+    attr_accessor :log
+    
+    def initialize(*args)
+      @log_init_msg = 'Initializing Logging using '
+
+      if ENV['RIGHT_API_CLIENT_LOG']
+        if File.exists?(ENV['RIGHT_API_CLIENT_LOG'])
+          file = File.open(ENV['RIGHT_API_CLIENT_LOG'], File::WRONLY | File::APPEND)
+        else
+          file = ENV['RIGHT_API_CLIENT_LOG']
+        end
+        @log = ::Logger.new(file)
+        @log_init_msg += ENV['RIGHT_API_CLIENT_LOG']
+      else
+        @log = ::Logger.new(STDOUT)
+        @log_init_msg += 'STDOUT'
+      end
     end
-    $log = Logger.new(file)
-    log_init_msg += ENV['RIGHT_API_CLIENT_LOG']
-  else
-    $log = Logger.new(STDOUT)
-    log_init_msg += 'STDOUT'
+
+    def init_message()
+      @log.info @log_init_msg
+    end
+
+    def info(msg)
+      @log.info msg
+    end
+    
+    def debug(msg)
+      @log.debug msg
+    end
+
+    def error(msg)
+      @log.error msg
+    end
   end
-  #$log.info log_init_msg
 end

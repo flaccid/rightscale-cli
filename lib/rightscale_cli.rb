@@ -17,5 +17,5 @@
 require 'rightscale_cli/version'
 require 'rightscale_cli/config'
 require 'rightscale_cli/monkey_patches/client_attributes'
-require 'rightscale_cli/logger'
+#require 'rightscale_cli/logger'
 require 'rightscale_cli/rightscale_cli'

@@ -40,7 +40,7 @@ class RightScaleCLI
       puts response.body
     end
 
-    desc "scrape", "Scrape a dashboard URL by href"
+    desc "scrape", "Scrape a dashboard URL by href."
     def scrape(href)
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
 
@@ -50,6 +50,22 @@ class RightScaleCLI
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       request = Net::HTTP::Get.new(uri.request_uri)
       request.add_field("Cookie", rightscale.last_request[:request].headers[:cookie])
+
+      response = http.request(request)
+      puts response.body
+    end
+
+    desc "ajax", "Scrape a dashboard URL via AJAX."
+    def ajax(href)
+      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
+
+      uri = URI.parse("#{rightscale.api_url}#{href}")
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request.add_field("Cookie", rightscale.last_request[:request].headers[:cookie])
+      request.add_field("X-Requested-With", "XMLHttpRequest")
 
       response = http.request(request)
       puts response.body

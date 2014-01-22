@@ -14,5 +14,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'rightscale_cli/config'
 require 'right_api_client'
+require 'rightscale_cli/config'
+require 'rightscale_cli/logger'
+
+class RightScaleCLI
+  class Client
+    attr_accessor :render
+    
+    def initialize(*args)
+      @client = RightApi::Client.new(RightScaleCLI::Config::API)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
+    def get(resource)
+      result = []
+      @client.send(resource).index.each { |record|
+        result.push(record.raw)
+      }
+      return result
+    end
+
+    def create(resource, params)
+      resource = @client.send("#{resource}s").create(resource => params)
+      @logger.info("Created #{resource.href}.")
+    end
+
+    def destroy(resource, resource_id)
+      resource = @client.send("#{resource}s").index({ :id => resource_id })
+      resource.destroy
+      @logger.info("Deleted #{resource.href}.")
+    end
+
+    def render(data, root_element, options)
+      RightScaleCLI::Output.render(data, root_element, options)
+    end
+  end
+end
