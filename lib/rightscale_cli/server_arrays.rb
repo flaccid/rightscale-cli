@@ -31,6 +31,12 @@ class RightScaleCLI
   class ServerArrays < Thor
     namespace :arrays
 
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
     # include render options
     eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
     
@@ -62,21 +68,11 @@ class RightScaleCLI
       end
     end
 
-    desc "show", "Shows a server array."
+    desc "show", "Shows a particular server array."
     def show(server_array_id)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-
-      server_array = rightscale.server_arrays(:id => server_array_id).show.raw
-
-      if options[:xml]
-        puts server_array.to_xml(:root => 'server_array')
-      elsif options[:json]
-        puts JSON.pretty_generate(server_array)
-      else
-        puts server_array.to_yaml
-      end
+      @client.render(@client.show('server_arrays', server_array_id), 'server_array')
     end
-    
+
     desc "state", "Shows the state of a server array."
     def state(server_array_id)
       $log.info "Retrieving state for server array, #{server_array_id}."
@@ -111,6 +107,11 @@ class RightScaleCLI
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
       server_array = rightscale.server_arrays(:id => server_array_id).show.api_methods
       puts server_array
+    end
+
+    desc "inputs", 'Update the inputs of the server array.'
+    def inputs(server_array_id)
+      @client.render(@client.get('server_arrays'), 'multi_cloud_images')
     end
 
     def self.banner(task, namespace = true, subcommand = false)
