@@ -40,6 +40,10 @@ class RightScaleCLI
       return result
     end
 
+    def show(resource, resource_id)
+      return @client.send(resource).index({ :id => resource_id }).show.raw
+    end
+
     def create(resource, params)
       resource = @client.send("#{resource}s").create(resource => params)
       @logger.info("Created #{resource.href}.")
