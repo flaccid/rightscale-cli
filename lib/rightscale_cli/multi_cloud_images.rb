@@ -39,6 +39,11 @@ class RightScaleCLI
       @client.render(@client.get('multi_cloud_images'), 'multi_cloud_images')
     end
 
+    desc "show", "Shows a particular MultiCloud Image."
+    def show(multi_cloud_image_id)
+      @client.render(@client.show('multi_cloud_images', multi_cloud_image_id), 'multi_cloud_image')
+    end
+    
     desc "create", "Creates a MultiCloud Image."
     def create(name, description)
       @client.create('multi_cloud_image', { :name => name, :description => description })
