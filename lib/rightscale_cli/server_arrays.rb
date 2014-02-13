@@ -111,7 +111,12 @@ class RightScaleCLI
 
     desc "inputs", 'Update the inputs of the server array.'
     def inputs(server_array_id)
-      @client.render(@client.get('server_arrays'), 'multi_cloud_images')
+      @client.render(@client.show('server_arrays', server_array_id), 'server_array')
+    end
+
+    desc "next", 'Show the next instance properties of the server array.'
+    def next(server_array_id)
+      @client.render(@client.client.server_arrays(:id => server_array_id).show.next_instance.index)
     end
 
     def self.banner(task, namespace = true, subcommand = false)
