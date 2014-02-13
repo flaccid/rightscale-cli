@@ -21,29 +21,35 @@ require 'right_api_client'
 class RightScaleCLI
   class Deployments < Thor
     namespace :deployments
-    
+
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
+    # include render options
+    eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
+
     desc "list", "Lists all deployments."
     def list()
-      deployments = Array.new
-      RightApi::Client.new(RightScaleCLI::Config::API).deployments.index.each { |deployment|
-        deployments.push(deployment.raw)
-      }  
-      puts deployments.to_yaml
+      @client.render(@client.get('deployments'), 'deployments')
     end
 
     desc "create", "Creates a deployment."
-    def create(name)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-
+    def create(name, description)
+      @client.create('deployment', { :name => name, :description => description })
     end
 
     desc "destroy", "Deletes a deployment."
-    def destroy(deployment)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-      
-      # construct deployment
-      deployment = Hash.new
-      rightscale.deployments.delete({:deployment => deployment})
+    def destroy(deployment_id)
+      @client.destroy('deployment', deployment_id)
+    end
+
+    desc "servers", "Lists servers in a deployment."
+    def servers(deployment)
+      @logger.info("Retrieving all servers in deployment, #{deployment}...")
+      @client.render(@client.show('deployments', deployment, 'servers'), 'servers')
     end
 
     def self.banner(task, namespace = true, subcommand = false)
