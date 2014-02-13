@@ -20,6 +20,7 @@ require 'rightscale_cli/logger'
 
 class RightScaleCLI
   class Client
+    attr_accessor :client
     attr_accessor :render
     
     def initialize(options)
@@ -40,8 +41,18 @@ class RightScaleCLI
       return result
     end
 
-    def show(resource, resource_id)
-      return @client.send(resource).index({ :id => resource_id }).show.raw
+    def show(resource, resource_id, *args)
+      if args.count > 0
+        result = []
+        records = @client.send(resource).index({ :id => resource_id }).show.send(args[0]).index
+        records.each { |record|
+          result.push(record.raw)
+        }
+        @logger.info("Resource count: #{result.count}.")
+      else
+        result = @client.send(resource).index({ :id => resource_id }).show.raw
+      end
+      return result 
     end
 
     def create(resource, params)
