@@ -36,19 +36,19 @@ class RightScaleCLI
       @client.render(@client.get('servers'), 'servers')
     end
 
+    desc "show", "Shows a server."
+    def show(id)
+      @client.render(@client.show('servers', id), 'server')
+    end
+
     desc "create", "Creates a server."
     def create(name)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-
+      # todo
     end
 
     desc "destroy", "Deletes a server."
     def destroy(server)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-      
-      # construct deployment
-      server = Hash.new
-      rightscale.servers.delete({:server => server})
+      # todo
     end
 
     def self.banner(task, namespace = true, subcommand = false)
