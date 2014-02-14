@@ -45,12 +45,12 @@ class RightScaleCLI
 
     desc "add", "Adds tag(s) to resource(s)."
     def add(hrefs, tags)
-      @client.client.tags.multi_add(:resource_hrefs => [hrefs.split(',')], :tags => [tags.split(',')])
+      @client.client.tags.multi_add(:resource_hrefs => hrefs.split(','), :tags => tags.split(','))
     end
 
     desc "delete", "Deletes tags from resource(s)."
     def delete(hrefs, tags)
-      @client.client.tags.multi_delete(:resource_hrefs => [hrefs.split(',')], :tags => [tags.split(',')])
+      @client.client.tags.multi_delete(:resource_hrefs => hrefs.split(','), :tags => tags.split(','))
     end
 
     def self.banner(task, namespace = true, subcommand = false)
