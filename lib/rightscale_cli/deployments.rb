@@ -60,7 +60,7 @@ class RightScaleCLI
           current_instance = server['links'].select { |link| link['rel'] == 'current_instance' }.first['href']
           cloud = current_instance.split('/')[3]
           instance_id = current_instance.split('/').last
-          puts @client.client.clouds(:id => cloud).show.instances(:id => instance_id).terminate
+          @client.client.clouds(:id => cloud).show.instances(:id => instance_id).terminate
         end
       }
     end
