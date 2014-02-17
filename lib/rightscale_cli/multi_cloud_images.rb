@@ -16,7 +16,6 @@
 
 require 'thor'
 require 'yaml'
-require 'right_api_client'
 require 'rightscale_cli/client'
 require 'rightscale_cli/logger'
 
