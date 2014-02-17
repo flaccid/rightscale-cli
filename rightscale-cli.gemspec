@@ -11,10 +11,10 @@ Gem::Specification.new do |s|
   s.bindir      = 'bin'
   s.executables = Dir.entries(s.bindir) - [".", "..", '.gitignore']
   s.homepage    = 'https://github.com/flaccid/rightscale-cli'
-  s.add_dependency 'activesupport'
-  s.add_dependency "json", ">= 1.4.4"
-  s.add_dependency 'right_api_client'
-  s.add_dependency 'octokit'
-  s.add_dependency 'thor'
-  s.add_dependency 'nokogiri'
+  s.add_runtime_dependency 'activesupport' '~> 4.0', '~> 0'
+  s.add_runtime_dependency 'json', '>= 1.4.4', '~> 0'
+  s.add_runtime_dependency 'right_api_client' '~> 1.5', '~> 0'
+  s.add_runtime_dependency 'octokit' '~> 2.7', '~> 0'
+  s.add_runtime_dependency 'thor' '~> 0.18', '~> 0'
+  s.add_runtime_dependency 'nokogiri' '~> 1.6', '~> 0'
 end
