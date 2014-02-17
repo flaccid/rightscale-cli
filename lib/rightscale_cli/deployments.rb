@@ -16,8 +16,9 @@
 
 require 'thor'
 require 'yaml'
-require 'right_api_client'
-      
+require 'rightscale_cli/client'
+require 'rightscale_cli/logger'
+
 class RightScaleCLI
   class Deployments < Thor
     namespace :deployments
@@ -50,6 +51,18 @@ class RightScaleCLI
     def servers(deployment)
       @logger.info("Retrieving all servers in deployment, #{deployment}...")
       @client.render(@client.show('deployments', deployment, 'servers'), 'servers')
+    end
+
+    desc "terminate", "Terminates all servers in a deployment."
+    def terminate(deployment)
+      @client.show('deployments', deployment, 'servers').each { |server|
+        unless server['state'] == 'inactive'
+          current_instance = server['links'].select { |link| link['rel'] == 'current_instance' }.first['href']
+          cloud = current_instance.split('/')[3]
+          instance_id = current_instance.split('/').last
+          puts @client.client.clouds(:id => cloud).show.instances(:id => instance_id).terminate
+        end
+      }
     end
 
     def self.banner(task, namespace = true, subcommand = false)
