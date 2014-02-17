@@ -24,7 +24,13 @@ require 'rightscale_cli/client'
 class RightScaleCLI
   class Dashboard < Thor
     namespace :dashboard
-    
+
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
     desc "overview", "RightScale Dashboard Overview."
     def overview()
       rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
