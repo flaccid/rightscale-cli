@@ -40,6 +40,12 @@ There is one command, `rs`.
  * For a list of subcommands, type `rs <namespace> help`, e.g. `rs arrays help`
  * For usage options of a subcommand, type `rs <namespace> help <subcommand>`, e.g. `rs arrays help instances`
 
+### Examples
+
+List all clouds:
+
+   $ rs clouds list
+
 ## License and Authors
 
 * Author:: Chris Fordham <chris [at] fordham [hyphon] nagy [dot] id [dot] au>
