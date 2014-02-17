@@ -17,5 +17,7 @@
 def ask_pass
   require 'io/console'
   print 'Password: '
-  return STDIN.noecho(&:gets).strip()
+  password = STDIN.noecho(&:gets).strip
+  puts
+  return password
 end
