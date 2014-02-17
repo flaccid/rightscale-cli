@@ -14,17 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'rightscale_cli/client'
 require 'rightscale_cli/logger'
 
 class RightScaleCLI
   class ServerArrays < Thor
 
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+    
     desc "links", "Lists the links for a server array."
 
     def links(server_array_id)
-      $log.info "Retrieving links for server array, #{server_array_id}."
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-      puts rightscale.server_arrays(:id => server_array_id).show.links.to_yaml
+      @logger.info "Retrieving links for server array, #{server_array_id}."
+      @client.render(@client.client.server_arrays(:id => server_array_id).show.links, 'links')
     end
   end
 end
