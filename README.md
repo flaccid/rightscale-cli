@@ -6,7 +6,7 @@ RightScale CLI client. Currently in early development stages.
 
 ## Installation
 
-Ruby >= 1.9.1 is required.
+Ruby `>= 1.9.1` is required.
 
 Install the latest RubyGem from RubyGems.org:
 
@@ -16,7 +16,7 @@ For more information, see https://rubygems.org/gems/rightscale-cli.
 
 ### Mac OS X, FreeBSD
 
-The executable, `rs` will conflict with RS(1) on Mac OS X (http://www.freebsd.org/cgi/man.cgi?query=rs&sektion=1&apropos=0&manpath=freebsd).
+The executable, `rs` will conflict with `RS(1)` on Mac OS X (http://www.freebsd.org/cgi/man.cgi?query=rs&sektion=1&apropos=0&manpath=freebsd).
 
 As a result, to avoid overwriting the `/usr/bin/rs` binary, use a different location in your `~/.gemrc` or `/etc/gemrc`, for example:
 
@@ -42,7 +42,7 @@ There is one command, `rs`.
 
 ### Examples
 
-List all clouds:
+List all clouds within your account:
 
     $ rs clouds list
 
