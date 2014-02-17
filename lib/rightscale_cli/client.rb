@@ -17,6 +17,7 @@
 require 'right_api_client'
 require 'rightscale_cli/config'
 require 'rightscale_cli/logger'
+require 'ask_pass'
 
 class RightScaleCLI
   class Client
@@ -26,7 +27,13 @@ class RightScaleCLI
     def initialize(options)
       config = RightScaleCLI::Config::API
       config[:account_id] = options['account'] if options[:account]
+      config[:email] = options['user'] if options[:user]
       config[:api_version] = options['api'] if options[:api]
+
+      if options['password'] || (!config[:password] && !config[:password_base64])
+        config[:password] = ask_pass
+        config[:password_base64] = nil    # set this to nil so it is not used by precenence
+      end
 
       @options = options
       @client = RightApi::Client.new(config)

@@ -17,6 +17,7 @@
 require 'thor'
 require 'rightscale_cli/config'
 require 'rightscale_cli/logger'
+require 'rightscale_cli/configure'
 require 'rightscale_cli/clouds'
 require 'rightscale_cli/dashboard'
 require 'rightscale_cli/deployments'
@@ -37,13 +38,25 @@ class RightScaleCLI
       :type => :string,
       :aliases => '-a',
       :required => false,
-      :desc => 'The RightScale account ID.'
+      :desc => 'RightScale account ID.'
+
+    class_option :user,
+      :type => :string,
+      :aliases => '-u',
+      :required => false,
+      :desc => 'RightScale user.'
+
+    class_option :password,
+      :type => :boolean,
+      :aliases => '-p',
+      :required => false,
+      :desc => 'RightScale user password.'
 
     class_option :api,
       :type => :string,
       :aliases => '-A',
       :required => false,
-      :desc => 'The RightScale API version.'
+      :desc => 'RightScale API version.'
 
     class_option :debug,
       :type => :boolean,
@@ -74,6 +87,7 @@ class RightScaleCLI
       :default => false,
       :desc => 'Dry-run only.'
 
+    register(Configure, 'configure', 'configure <command>', 'Configure the RightScale credentials used by the client.')
     register(Clouds, 'clouds', 'clouds <command>', 'Query clouds.')
     register(Dashboard, 'dashboard', 'dashboard <command>', 'RightScale Dashboard (HTTP hax).')
     register(ServerArrays, 'arrays', 'arrays <command>', 'Manage server arrays.')
