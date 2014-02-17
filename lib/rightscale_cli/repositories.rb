@@ -15,17 +15,22 @@
 # limitations under the License.
 
 require 'thor'
-require 'right_api_client'
+require 'rightscale_cli/client'
+require 'rightscale_cli/logger'
 
 class RightScaleCLI
   class Repositories < Thor
     namespace :repositories
 
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
     desc "list", "Lists all (Chef) Repositories."
     def list()
-      repositories = []
-      RightApi::Client.new(RightScaleCLI::Config::API).repositories.index.each { |repos| repositories.push(repos.raw) }  
-      RightScaleCLI::Output.render(repositories, 'repositories', options)
+      @client.render(@client.get('repositories'), 'repositories')
     end
 
     desc "create", "Creates a (Chef) Repository."
@@ -48,12 +53,12 @@ class RightScaleCLI
       puts repository if options[:verbose]
 
       $log.info "Creating RightScale repository, '#{repository['name']}'."
-      repo = RightApi::Client.new(RightScaleCLI::Config::API).repositories.create({ :repository => repository })
+      @client.client.repositories.create({ :repository => repository })
     end
 
     desc "destroy", "Deletes a (Chef) Repository."
     def destroy(id)
-      RightApi::Client.new(RightScaleCLI::Config::API).repositories.index(:id => id).destroy
+      @client.client.repositories.index(:id => id).destroy
     end
 
     def self.banner(task, namespace = true, subcommand = false)

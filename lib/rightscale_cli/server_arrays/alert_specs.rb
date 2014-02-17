@@ -20,20 +20,12 @@ class RightScaleCLI
     desc "alert_specs", "Shows a server array's alert specifications."
 
     def alert_specs(server_array_id)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-
       alert_specs = []
-      rightscale.server_arrays(:id => server_array_id).show.alert_specs.index.each { |alert_spec|
+      @client.client.server_arrays(:id => server_array_id).show.alert_specs.index.each { |alert_spec|
         alert_specs.push(alert_spec.raw)
       }
 
-      if options[:xml]
-        puts alert_specs.to_xml(:root => 'alert_specs')
-      elsif options[:json]
-        puts JSON.pretty_generate(alert_specs)
-      else
-        puts alert_specs.to_yaml
-      end
+      @client.render(alert_specs, 'server_array')
     end
   end
 end

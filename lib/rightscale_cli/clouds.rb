@@ -15,32 +15,30 @@
 # limitations under the License.
 
 require 'thor'
-require 'yaml'
-require 'json'
-require "active_support/core_ext"
+require 'rightscale_cli/client'
+require 'rightscale_cli/logger'
 
 class RightScaleCLI
   class Clouds < Thor
     namespace :clouds
 
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
+    # include render options
+    eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
+
     desc "list", "Lists all clouds."
     def list()
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-      clouds = []
-
-      $log.info "Retrieving all clouds from #{rightscale.account_id}."
-
-      rightscale.clouds.index.each { |cloud|
-        clouds.push(cloud.raw)
-      }  
-      puts clouds.to_yaml
+      @client.render(@client.get('clouds'), 'clouds')
     end
 
     desc "show", "Shows a cloud."
     def show(cloud_id)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-      cloud = rightscale.clouds(:id => cloud_id).show.raw
-      puts cloud.to_yaml
+      @client.render(@client.show('clouds', cloud_id), 'cloud')
     end
 
     desc "search", "Searches for clouds by cloud type, name, description."
@@ -48,22 +46,21 @@ class RightScaleCLI
     option :cloud_type, :type => :string, :required => false
     option :description, :type => :string, :required => false
     def search()
-
       filter = []
       filter.push("name==#{options[:name]}") if options[:name]
       filter.push("cloud_type==#{options[:cloud_type]}") if options[:cloud_type]
       filter.push("description==#{options[:cloud]}") if options[:description]
 
-      $log.info "Searching for clouds!"
+      @logger.info "Searching for clouds!"
 
       puts "filter: #{filter}" if options[:debug]
       
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)      
       clouds = []
-      rightscale.clouds.index(:filter => filter).each { |cloud|
+      @client.client.clouds.index(:filter => filter).each { |cloud|
         clouds.push(cloud.raw)
       }  
-      puts clouds.to_yaml
+
+      @client.render(clouds, 'clouds')
     end
 
     def self.banner(task, namespace = true, subcommand = false)

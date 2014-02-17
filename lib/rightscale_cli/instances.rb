@@ -15,8 +15,7 @@
 # limitations under the License.
 
 require 'thor'
-require 'yaml'
-require 'right_api_client'
+require 'rightscale_cli/client'
 require 'rightscale_cli/logger'
 
 class RightScaleCLI
@@ -54,12 +53,9 @@ class RightScaleCLI
       filter.push("server_template_href==#{options[:server_template]}") if options[:server_template]
       filter.push("state==#{options[:state]}") if options[:state]
 
-      $log.debug "filter: #{filter}" if options[:debug]
+      @logger.debug "filter: #{filter}" if options[:debug]
 
-      RightApi::Client.new(RightScaleCLI::Config::API).clouds(:id => options[:cloud]).show.instances(:filter => filter).index.each { |instance|
-        instances.push(instance.raw)
-      }  
-      puts instances.to_yaml
+      @client.render(@client.clent.clouds(:id => options[:cloud]).show.instances(:filter => filter).index)
     end
 
     desc "run-exec", "Runs a chef recipe or rightscript on instances of a given cloud."
@@ -100,12 +96,10 @@ class RightScaleCLI
       filter.push("state==#{options[:state]}") if options[:state]
 
       params['filter'] = filter
-      $log.debug "filter: #{filter}" if options[:debug]
-      $log.debug "params: #{params}" if options[:debug]
+      @logger.debug "filter: #{filter}" if options[:debug]
+      @logger.debug "params: #{params}" if options[:debug]
       
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-
-      rightscale.clouds(:id => options[:cloud]).show.instances.multi_run_executable(params)
+      @client.client.clouds(:id => options[:cloud]).show.instances.multi_run_executable(params)
     end
     
     def self.banner(task, namespace = true, subcommand = false)

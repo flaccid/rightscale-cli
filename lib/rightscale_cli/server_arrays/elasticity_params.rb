@@ -20,9 +20,8 @@ class RightScaleCLI
     desc "params", "Lists the elasticity parameters for a server array."
 
     def params(server_array_id)
-      $log.info "Retrieving elasticity parameters for server array, #{server_array_id}."
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-      puts rightscale.server_arrays(:id => server_array_id).show.elasticity_params.to_yaml
+      @logger.info "Retrieving elasticity parameters for server array, #{server_array_id}."
+      @client.render(@client.client.server_arrays(:id => server_array_id).show.elasticity_params, 'server_array')
     end
   end
 end

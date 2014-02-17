@@ -35,11 +35,7 @@ class RightScaleCLI
     option :state, :desc => 'The state of Instances to filter on.', :type => :string, :required => false
 
     def instances(server_array_id)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-
-      array_instances = []
       filter = []
-
       filter.push("datacenter_href==#{options[:datacenter]}") if options[:datacenter]
       filter.push("deployment_href==#{options[:deployment]}") if options[:deployment]
       filter.push("name==#{options[:private_ip]}") if options[:name]
@@ -53,13 +49,14 @@ class RightScaleCLI
       filter.push("server_template_href==#{options[:server_template]}") if options[:server_template]
       filter.push("state==#{options[:state]}") if options[:state]
 
-      $log.debug "filter: #{filter}" if options[:debug]
+      @logger.debug "filter: #{filter}" if options[:debug]
 
-      rightscale.server_arrays(:id => server_array_id).show.current_instances(:filter => filter).index.each { |array_instance|
+      array_instances = []
+      @client.client.server_arrays(:id => server_array_id).show.current_instances(:filter => filter).index.each { |array_instance|
         array_instances.push(array_instance.raw)
       }
 
-      RightScaleCLI::Output.render(array_instances, 'array_instances', options)
+      @client.render(array_instances, 'array_instances')
     end
   end
 end

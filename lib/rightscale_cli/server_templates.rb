@@ -25,68 +25,44 @@ class RightScaleCLI
   class ServerTemplates < Thor
     namespace :server_templates
 
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
     # include render options
     eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
     
     desc "list", "Lists ServerTemplates."
     def list()
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-      server_templates = []
-      rightscale.server_templates.index.each { |server_template|
-        server_templates.push(server_template.raw)
-      }
-
-      if options[:xml]
-        puts server_templates.to_xml(:root => 'server_templates')
-      elsif options[:json]
-        puts JSON.pretty_generate(server_templates)
-      else
-        puts server_templates.to_yaml
-      end
+      @client.render(@client.get('server_templates'), 'server_templates')
     end
     
     desc "show", "Shows a ServerTemplate."
     def show(server_template_id)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-
-      server_template = rightscale.server_templates(:id => server_template_id).show.raw
-
-      if options[:xml]
-        puts server_template.to_xml(:root => 'server_template')
-      elsif options[:json]
-        puts JSON.pretty_generate(server_template)
-      else
-        puts server_template.to_yaml
-      end
+      @client.render(@client.show('server_templates', server_template_id), 'server_template')
     end
 
     desc "inputs", "Shows a ServerTemplate's inputs."
     def inputs(server_template_id)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-
-      server_template_inputs = []      
-      rightscale.server_templates(:id => server_template_id).show.inputs.index.each { |input| server_template_inputs.push(input.raw) }
-
-      if options[:xml]
-        puts server_template_inputs.to_xml(:root => 'server_template')
-      elsif options[:json]
-        puts JSON.pretty_generate(server_template_inputs)
-      else
-        puts server_template_inputs.to_yaml
+      server_template_inputs = []
+      @client.client.server_templates(:id => server_template_id).show.inputs.index.each do |input|
+        server_template_inputs.push(input.raw)
       end
+      @client.render(server_template_inputs, 'inputs')
     end
     
     desc "inputs_dashboard", "Inputs scraped from dashboard."
     def inputs_dashboard(server_template_id)
-      rightscale = RightApi::Client.new(RightScaleCLI::Config::API)
-      uri = URI.parse("#{rightscale.api_url}/acct/#{rightscale.account_id}/inputs/edit_inputs?container_id=#{server_template_id}&container_type=ServerTemplate")
+      uri = URI.parse("#{@client.client.api_url}/acct/#{@client.client.account_id}/inputs/edit_inputs?container_id=#{server_template_id}&container_type=ServerTemplate")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       request = Net::HTTP::Get.new(uri.request_uri)
-      request.add_field("Referer", "#{rightscale.api_url}/acct/#{rightscale.account_id}/server_templates/#{server_template_id}")
+      request.add_field("Referer", "#{@client.client.api_url}/acct/#{@client.client.account_id}/server_templates/#{server_template_id}")
       request.add_field("X-Requested-With", "XMLHttpRequest")
-      request.add_field("Cookie", rightscale.last_request[:request].headers[:cookie])
+      request.add_field("Cookie", @client.client.last_request[:request].headers[:cookie])
       response = http.request(request)
       puts response.body if options[:debug]
 
@@ -104,13 +80,7 @@ class RightScaleCLI
         inputs.push(input)
       }
 
-      if options[:xml]
-        puts inputs.to_xml(:root => 'inputs')
-      elsif options[:json]
-        puts JSON.pretty_generate(inputs)
-      else
-        puts inputs.to_yaml
-      end
+      @client.render(inputs, 'inputs')
     end
   end
 end

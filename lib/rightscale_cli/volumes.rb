@@ -15,15 +15,18 @@
 # limitations under the License.
 
 require 'thor'
-require 'yaml'
-require 'json'
-require "active_support/core_ext"
 require 'rightscale_cli/logger'
 require 'rightscale_cli/client'
 
 class RightScaleCLI
   class Volumes < Thor
     namespace :volumes
+
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
 
     # include render options
     eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
@@ -35,31 +38,28 @@ class RightScaleCLI
     option :name, :desc => "The name of the Volume to filter on.", :type => :string, :required => false
     option :parent, :desc => "The href of the snapshot from which the volume was created.", :type => :string, :required => false
     option :resource_uid, :desc => "Resource Unique IDentifier for the Volume to filter on.", :type => :string, :required => false
-
     def list()
-      volumes = []      
       filter = []
-
       filter.push("datacenter_href==/api/clouds/#{options[:cloud]}/datacenters/#{options[:datacenter]}") if options[:datacenter]
       filter.push("description==#{options[:description]}") if options[:description]
       filter.push("name==#{options[:name]}") if options[:name]
       filter.push("parent_volume_snapshot_href==#{options[:parent]}") if options[:parent]
       filter.push("resource_uid==#{options[:resource_uid]}") if options[:resource_uid]
 
-      $log.debug "filter: #{filter}" if options[:debug]
+      @logger.debug "filter: #{filter}" if options[:debug]
 
-      RightApi::Client.new(RightScaleCLI::Config::API).clouds(:id => options[:cloud]).show.volumes(:filter => filter).index.each { |volume|
+      volumes = []
+      @client.client.clouds(:id => options[:cloud]).show.volumes(:filter => filter).index.each { |volume|
         volumes.push(volume.raw)
       }
 
-      RightScaleCLI::Output.render(volumes, 'volumes', options)
+      @client.render(volumes, 'volumes')
     end
 
     desc "show", "Shows a volume."
     option :cloud, :desc => "The cloud to query for volumes in.", :type => :string, :required => true
     def show(volume_id)
-      volume = RightApi::Client.new(RightScaleCLI::Config::API).clouds(:id => options[:cloud]).show.volumes(:id => volume_id).show.raw
-      RightScaleCLI::Output.render(volume, 'volume', options)
+      @client.render(@client.client.clouds(:id => options[:cloud]).show.volumes(:id => volume_id).show.raw, 'volume')
     end
 
     def self.banner(task, namespace = true, subcommand = false)
