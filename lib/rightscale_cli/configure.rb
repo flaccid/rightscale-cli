@@ -75,21 +75,21 @@ class RightScaleCLI
 
     desc "all", "Configure RightScale CLI."
     def all()
-      #directives = {
-      #  :account_id => account(),
-      #  :email => user(),
-      #  :password_base64 => Base64.encode64(ask_pass).strip,
-      #  :api_url => shard(),
-      #  :api_version => api()
-      #}
-      #@logger.debug(directives)
+      # directives = {
+      #   :account_id => account(),
+      #   :email => user(),
+      #   :password_base64 => Base64.encode64(ask_pass).strip,
+      #   :api_url => shard(),
+      #   :api_version => api()
+      # }
+      # @logger.debug(directives)
 
       # currently this is the lazy way, each is written sequentially
-      account()
-      user()
-      password()
-      shard()
-      api()
+      account
+      user
+      password
+      shard
+      api
       puts 'Configuration saved.'
     end
 
