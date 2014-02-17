@@ -38,6 +38,7 @@ class RightScaleCLI
     no_commands{
     def update_conf(directives)
       renderer = ERB.new(IO.read(@template_path))
+      Dir.mkdir(File.dirname(@config.path)) unless File.exists?(File.dirname(@config.path))
       File.open(@config.path, 'w') {|f| f.write(renderer.result(binding)) }
     end
     }
