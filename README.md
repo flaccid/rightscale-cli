@@ -44,7 +44,7 @@ There is one command, `rs`.
 
 List all clouds:
 
-   $ rs clouds list
+    $ rs clouds list
 
 ## License and Authors
 
