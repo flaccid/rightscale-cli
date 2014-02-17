@@ -18,11 +18,11 @@ require 'yaml'
 
 class RightScaleCLI
   class Config
-    attr_accessor :local, :conf_path
+    attr_accessor :local, :path
 
     def initialize(*args)
-      @conf_path = File.join(ENV['HOME'], '.rightscale', 'right_api_client.yml')
-      @local = YAML.load_file(@conf_path)
+      @path = File.join(ENV['HOME'], '.rightscale', 'right_api_client.yml')
+      @local = YAML.load_file(@path)
     end
   end
 end
