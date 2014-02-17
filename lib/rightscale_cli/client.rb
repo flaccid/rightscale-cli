@@ -32,7 +32,7 @@ class RightScaleCLI
 
       if options['password'] || (!config[:password] && !config[:password_base64])
         config[:password] = ask_pass
-        config[:password_base64] = nil    # set this to nil so it is not used by precenence
+        config[:password_base64] = nil    # set this to nil so it is not used by precedence
       end
 
       @options = options
