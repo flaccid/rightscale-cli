@@ -25,7 +25,7 @@ class RightScaleCLI
     attr_accessor :render
     
     def initialize(options)
-      config = RightScaleCLI::Config::API
+      config = RightScaleCLI::Config.new.local
       config[:account_id] = options['account'] if options[:account]
       config[:email] = options['user'] if options[:user]
       config[:api_version] = options['api'] if options[:api]
