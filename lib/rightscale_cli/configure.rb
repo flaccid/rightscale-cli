@@ -30,61 +30,66 @@ class RightScaleCLI
     def initialize(*args)
       super
       @logger = RightScaleCLI::Logger.new()
-      @conf_template_path = File.join(File.dirname(__FILE__), '..', 'templates', '/right_api_client.yml.erb')
-      @config = RightScaleCLI::Config.new.local
+      @template_path = File.join(File.dirname(__FILE__), '..', 'templates', '/right_api_client.yml.erb')
+      @config = RightScaleCLI::Config.new
+      @directives = {}
     end
 
     no_commands{
     def update_conf(directives)
-      renderer = ERB.new(IO.read(@conf_template_path))
-      File.open(local_filename, 'w') {|f| f.write(renderer.result(binding)) }
+      renderer = ERB.new(IO.read(@template_path))
+      File.open(@config.path, 'w') {|f| f.write(renderer.result(binding)) }
     end
     }
 
     desc "account", "Configure the RightScale account ID for the client."
     def account()
-      account = ask("RightScale account ID (e.g. 1337):") 
+      update_conf(@config.local.merge({:account_id => ask("RightScale account ID (e.g. 1337):")}))
     end
 
     desc "user", "Configure the RightScale user for the client."
     def user()
-      email = ask("RightScale username (e.g. bill.gates@microsoft.com):")
+      update_conf(@config.local.merge({:email => ask("RightScale username (e.g. bill.gates@microsoft.com):")}))
     end
 
     desc "password", "Configure the RightScale user password for the client."
     def password()
-      password = ask_pass.strip
+      update_conf(@config.local.merge({:password_base64 => Base64.encode64(ask_pass).strip}))
     end
 
     desc "api", "Configure the RightScale API version used by the client."
     def api()
-      api_version = ask("RightScale API version (e.g. 1.5):")
+      update_conf(@config.local.merge({:api_version => ask("RightScale API version (e.g. 1.5):")}))
     end
 
     desc "shard", "Configure the RightScale shard used by the client."
     def shard()
-      api_url = "https://#{ask("RightScale shard (e.g. us-4.rightscale.com):")}"
+      update_conf(@config.local.merge({:api_url => "https://#{ask("RightScale shard (e.g. us-4.rightscale.com):")}"}))
     end
 
     desc "show", "Print the current configuration from ~/.rightscale/right_api_client.yml."
     def show()
-      puts @config
+      puts @config.local
     end
 
     desc "all", "Configure RightScale CLI."
     def all()
-      directives = {
-        :account_id => account(),
-        :email => user(),
-        :password_base64 => Base64.encode64(ask_pass).strip,
-        :api_url => shard(),
-        :api_version => api()
-      }
-      @logger.debug(directives)
+      #directives = {
+      #  :account_id => account(),
+      #  :email => user(),
+      #  :password_base64 => Base64.encode64(ask_pass).strip,
+      #  :api_url => shard(),
+      #  :api_version => api()
+      #}
+      #@logger.debug(directives)
 
-      update_conf(directives)
-
-      puts 'Configuration updated.'
+      # currently this is the lazy way, each is written sequentially
+      account()
+      user()
+      password()
+      shard()
+      api()
+      puts 'Configuration saved.'
     end
 
     #default_task :all
