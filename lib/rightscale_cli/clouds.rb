@@ -32,8 +32,23 @@ class RightScaleCLI
     eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
 
     desc "list", "Lists all clouds."
+    option :basic, :type => :boolean, :required => false
     def list()
-      @client.render(@client.get('clouds'), 'clouds')
+      clouds = @client.get('clouds')
+
+      if options[:basic]
+        basic_fields = [ 'display_name', 'cloud_type', 'name' ]
+        basic_clouds = []
+        @client.get('clouds').each { |cloud|
+          cloud_id = cloud['links'].select { |link| link['rel'] == 'instances' }.first['href'].split('/')[3]
+          c = cloud.select{|x| basic_fields.include?(x)}
+          c['cloud_id'] = cloud_id
+          basic_clouds.push(c)
+        }
+        clouds = basic_clouds
+      end
+
+      @client.render(clouds, 'clouds')
     end
 
     desc "show", "Shows a cloud."
