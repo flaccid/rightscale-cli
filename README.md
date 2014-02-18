@@ -3,22 +3,38 @@
 [![Gem Version](https://fury-badge.herokuapp.com/rb/rightscale-cli.png)](http://badge.fury.io/rb/rightscale-cli)
 
 RightScale CLI client. Currently in early development stages.
+For more information, see https://rubygems.org/gems/rightscale-cli.
 
 ## Installation
 
-Ruby `>= 1.9.3` is required.
-
-If you are installing on a Debian or Ubuntu release that currently has Ruby 1.8 installed, upgrade:
-
-    # apt-get install ruby1.9.3
-    # update-alternatives --set ruby /usr/bin/ruby1.9.1
-
-Install the latest RubyGem from RubyGems.org:
+Ruby >= 1.9.3 is required. Using rbenv or RVM is recommended, or install the gem from RubyGems.org:
 
     $ gem install rightscale-cli
 
-For more information, see https://rubygems.org/gems/rightscale-cli.
+### Debian/Ubuntu
 
+If you are installing on a Debian or Ubuntu release that currently has Ruby 1.8 installed, upgrade by taking the following steps.
+
+Remove Ruby 1.8:
+
+    # apt-get remove --purge libruby1.8 ruby ruby1.8
+
+Install Ruby 1.9.3:
+
+    # apt-get install ruby1.9.3 rubygems1.9.1
+
+Re-install RightLink if on a RightScale server (removing ruby removes it), for example on EC2:
+
+    # apt-get install rightlink rightlink-cloud-ec2
+    
+Then, install the gem: 
+
+    # gem install rightscale-cli
+
+Ensure system uses ruby1.9:
+
+    # update-alternatives --set ruby /usr/bin/ruby1.9.1
+    
 ### Mac OS X, FreeBSD
 
 The executable, `rs` will conflict with `RS(1)` on Mac OS X (http://www.freebsd.org/cgi/man.cgi?query=rs&sektion=1&apropos=0&manpath=freebsd).
