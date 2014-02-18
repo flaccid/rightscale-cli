@@ -15,8 +15,6 @@
 # limitations under the License.
 
 require 'thor'
-require 'yaml'
-require 'right_api_client'
 require 'rightscale_cli/client'
 require 'rightscale_cli/logger'
 
@@ -34,8 +32,21 @@ class RightScaleCLI
     eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
 
     desc "search", "Search for resources having a list of tags in a specific resource_type."
-    def search()
-      # todo
+    option :deleted, :type => :boolean, :required => false, :default => false
+    option :all, :type => :boolean, :required => false, :default => false
+    option :count, :type => :boolean, :required => false, :default => false
+    def search(resource_type, tag)
+      results = @client.client.tags.by_tag({
+        :with_deleted => options[:deleted],
+        :match_all => options[:all],
+        :resource_type => resource_type,
+        :tags => [ tag ]})
+
+      resources = []
+      results.each { |resource| resources.push(resource.raw) }
+        
+      @logger.info "Found #{resources[0]['links'].count} #{resource_type} with tag, '#{tag}'."
+      @client.render(resources[0], 'tag_search') unless options[:count]
     end
 
     desc "resource", "Get tags for a list of resource hrefs."
