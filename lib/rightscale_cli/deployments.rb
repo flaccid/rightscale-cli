@@ -54,15 +54,13 @@ class RightScaleCLI
     end
 
     desc "terminate", "Terminates all servers in a deployment."
-    def terminate(deployment)
-      @client.show('deployments', deployment, 'servers').each { |server|
-        unless server['state'] == 'inactive'
-          current_instance = server['links'].select { |link| link['rel'] == 'current_instance' }.first['href']
-          cloud = current_instance.split('/')[3]
-          instance_id = current_instance.split('/').last
-          @client.client.clouds(:id => cloud).show.instances(:id => instance_id).terminate
+    def terminate(deployment_id)
+      @client.client.deployments.index(:id=> deployment_id).show.servers.index.each do |server|
+        unless server.state == 'inactive'
+          @logger.info "Terminating #{server.href} (state: #{server.state}.)"
+          server.terminate
         end
-      }
+      end
     end
 
     def self.banner(task, namespace = true, subcommand = false)
