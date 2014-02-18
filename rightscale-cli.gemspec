@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'rightscale-cli'
-  s.version     = '0.5.1'
-  s.date        = '2014-02-17'
+  s.version     = '0.5.3'
+  s.date        = '2014-02-18'
   s.summary     = "rightscale-cli"
   s.description = "RightScale command line interface client."
   s.authors     = ["Chris Fordham"]
@@ -11,10 +11,10 @@ Gem::Specification.new do |s|
   s.bindir      = 'bin'
   s.executables = Dir.entries(s.bindir) - [".", "..", '.gitignore']
   s.homepage    = 'https://github.com/flaccid/rightscale-cli'
-  s.add_runtime_dependency 'activesupport' '~> 4.0', '~> 0'
-  s.add_runtime_dependency 'json', '>= 1.4.4', '~> 0'
-  s.add_runtime_dependency 'right_api_client' '~> 1.5', '~> 0'
-  s.add_runtime_dependency 'octokit' '~> 2.7', '~> 0'
-  s.add_runtime_dependency 'thor' '~> 0.18', '~> 0'
-  s.add_runtime_dependency 'nokogiri' '~> 1.6', '~> 0'
+  s.add_runtime_dependency 'activesupport', '~> 4.0'
+  s.add_runtime_dependency 'json', '~> 1.4', '>= 1.4.4'
+  s.add_runtime_dependency 'right_api_client', '~> 1.5'
+  s.add_runtime_dependency 'octokit', '~> 2.7'
+  s.add_runtime_dependency 'thor', '~> 0.18'
+  s.add_runtime_dependency 'nokogiri', '~> 1.6'
 end
