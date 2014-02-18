@@ -42,7 +42,7 @@ class RightScaleCLI
         @client.get('clouds').each { |cloud|
           cloud_id = cloud['links'].select { |link| link['rel'] == 'instances' }.first['href'].split('/')[3]
           c = cloud.select{|x| basic_fields.include?(x)}
-          c['cloud_id'] = cloud_id
+          c['cloud_id'] = cloud_id.to_i
           basic_clouds.push(c)
         }
         clouds = basic_clouds
