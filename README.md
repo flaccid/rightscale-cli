@@ -26,7 +26,7 @@ Install Ruby 1.9.3:
 Re-install RightLink if on a RightScale server (removing ruby removes it), for example on EC2:
 
     # apt-get install rightlink rightlink-cloud-ec2
-    # service rigtscale start
+    # service rightscale start
     # service rightlink start
     
 Then, install the gem: 
