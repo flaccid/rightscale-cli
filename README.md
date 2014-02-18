@@ -6,7 +6,7 @@ RightScale CLI client. Currently in early development stages.
 
 ## Installation
 
-Ruby `>= 1.9.1` is required.
+Ruby `>= 1.9.3` is required.
 
 Install the latest RubyGem from RubyGems.org:
 
