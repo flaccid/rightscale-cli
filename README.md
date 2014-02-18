@@ -8,6 +8,11 @@ RightScale CLI client. Currently in early development stages.
 
 Ruby `>= 1.9.3` is required.
 
+If you are installing on a Debian or Ubuntu release that currently has Ruby 1.8 installed, upgrade:
+
+    # apt-get install ruby1.9.3
+    # update-alternatives --set ruby /usr/bin/ruby1.9.1
+
 Install the latest RubyGem from RubyGems.org:
 
     $ gem install rightscale-cli
