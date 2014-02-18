@@ -4,17 +4,17 @@
 # Account ID is a required parameter. You can find your account number by logging into the
 # RightScale dashboard (https://my.rightscale.com), navigate to the Settings > Account Settings page.
 # The account number is at the end of the browser address bar.
-:account_id: <%= directives[:account_id] %>
+:account_id: <%= @directives[:account_id] %>
 
 # There are five login mechanisms:
 
 # 0. Use the following parameters to login with your email and base64-encoded password:
 # To encode your plaintext password, use 'base64' command or similar.
-:email: <%= directives[:email] %>
-:password_base64: <%= directives[:password_base64] %>
+:email: <%= @directives[:email] %>
+:password_base64: <%= @directives[:password_base64] %>
 
 # 1. Use the following parameters to login with your email and plaintext password:
-#:email: <%= directives[:email] %>
+#:email: <%= @directives[:email] %>
 #:password: my_password
 
 # 2. Use the following parameter to login with an instance_token:
@@ -31,5 +31,5 @@
 #:access_token: my_token_string
 
 # The following are optional parameters:
-:api_url: <%= directives[:api_url] %>
-:api_version: <%= directives[:api_version] %>
+:api_url: <%= @directives[:api_url] %>
+:api_version: <%= @directives[:api_version] %>
