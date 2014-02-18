@@ -15,5 +15,5 @@
 # limitations under the License.
 
 class RightScaleCLI
-  VERSION = '0.5.4'
+  VERSION = '0.5.5'
 end
