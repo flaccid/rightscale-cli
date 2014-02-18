@@ -15,14 +15,34 @@
 # limitations under the License.
 
 require 'yaml'
+require 'fileutils'
 
 class RightScaleCLI
   class Config
-    attr_accessor :local, :path
+    attr_accessor :template_path, :config_home, :config_path, :directives
 
     def initialize(*args)
-      @path = File.join(ENV['HOME'], '.rightscale', 'right_api_client.yml')
-      @local = YAML.load_file(@path)
+      @template_path = File.join(File.dirname(__FILE__), '..', 'templates', 'right_api_client.yml.erb')
+      @config_home = File.join(ENV['HOME'], '.rightscale')
+      @config_path = File.join(@config_home, 'right_api_client.yml')
+
+      Dir.mkdir(@config_home) unless File.exists?(@config_home)
+      FileUtils.touch(@config_path)
+      
+      # write a fresh file if it does not load/parse
+      unless YAML.load_file(@config_path)
+        @directives = {
+           :account_id => '',
+           :email => '',
+           :password_base64 => '',
+           :api_url => 'https://us-4.rightscale.com',
+           :api_version => '1.5'
+        }
+        File.open(@config_path, 'w') {|f| f.write(ERB.new(IO.read(@template_path)).result(binding)) }
+      end
+
+      # load/reload the directives from the file
+      @directives = YAML.load_file(@config_path)
     end
   end
 end
