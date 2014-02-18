@@ -35,18 +35,34 @@ class RightScaleCLI
     option :deleted, :type => :boolean, :required => false, :default => false
     option :all, :type => :boolean, :required => false, :default => false
     option :count, :type => :boolean, :required => false, :default => false
+    option :prefix, :type => :boolean, :required => false, :default => false
     def search(resource_type, tag)
-      results = @client.client.tags.by_tag({
-        :with_deleted => options[:deleted],
-        :match_all => options[:all],
-        :resource_type => resource_type,
-        :tags => [ tag ]})
+      if options[:prefix]
+        options[:prefix] = tag 
+        results = @client.client.tags.by_tag({
+          :with_deleted => options[:deleted],
+          :match_all => options[:all],
+          :include_tags_with_prefix => options[:prefix],
+          :resource_type => resource_type,
+          :tags => [ tag ]})
+      else
+        results = @client.client.tags.by_tag({
+          :with_deleted => options[:deleted],
+          :match_all => options[:all],
+          :resource_type => resource_type,
+          :tags => [ tag ]})
+      end
 
       resources = []
       results.each { |resource| resources.push(resource.raw) }
-        
-      @logger.info "Found #{resources[0]['links'].count} #{resource_type} with tag, '#{tag}'."
-      @client.render(resources[0], 'tag_search') unless options[:count]
+
+      if resources.count > 0
+        resource_count = resources[0]['links'].count
+      else
+        resource_count = 0
+      end
+      @logger.info "Found #{resource_count} #{resource_type} with tag, '#{tag}'."
+      @client.render(resources[0], 'tag_search') unless ( options[:count] || resource_count == 0 )
     end
 
     desc "resource", "Get tags for a list of resource hrefs."
