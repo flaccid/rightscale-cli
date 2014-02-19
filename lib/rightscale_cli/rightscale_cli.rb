@@ -27,6 +27,7 @@ require 'rightscale_cli/repositories'
 require 'rightscale_cli/servers'
 require 'rightscale_cli/server_arrays'
 require 'rightscale_cli/server_templates'
+require 'rightscale_cli/ssh_keys'
 require 'rightscale_cli/tags'
 require 'rightscale_cli/volumes'
 
@@ -97,6 +98,7 @@ class RightScaleCLI
     register(Repositories, 'repositories', 'repositories <command>', 'Manage (Chef) Repositories.')
     register(Servers, 'servers', 'servers <command>', 'Manage servers.')
     register(ServerTemplates, 'server_templates', 'server-templates <command>', 'Manage ServerTemplates.')
+    register(SSHKeys, 'ssh_keys', 'ssh_keys <command>', 'Manage cloud SSH keys.')
     register(Tags, 'tags', 'tags <command>', 'Manage tags.')
     register(Volumes, 'volumes', 'volumes <command>', 'Manage volumes.')
   end
