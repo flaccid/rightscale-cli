@@ -51,6 +51,11 @@ class RightScaleCLI
       # todo
     end
 
+    desc "terminate", "Terminates a server."
+    def destroy(server)
+      # todo
+    end
+
     def self.banner(task, namespace = true, subcommand = false)
       "#{basename} #{task.formatted_usage(self, true, subcommand)}"
     end
