@@ -22,6 +22,17 @@ class RightScaleCLI
   class Instances < Thor
     namespace :instances
 
+    def initialize(*args)
+      super
+      @client = RightScaleCLI::Client.new(options)
+      @logger = RightScaleCLI::Logger.new()
+    end
+
+    # include render options
+    eval(IO.read(
+      "#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding
+    )
+
     desc "list", "Lists all instances for a given cloud."
     option :cloud, :desc => 'The cloud to filter on.', :type => :string, :required => true
     option :datacenter, :desc => 'The href of the datacenter to filter on', :type => :string, :required => false
@@ -37,9 +48,7 @@ class RightScaleCLI
     option :server_template, :desc => 'The href of the ServerTemplate to filter on.', :type => :string, :required => false
     option :state, :desc => 'The state of Instances to filter on.', :type => :string, :required => false
     def list()
-      instances = []
       filter = []
-
       filter.push("datacenter_href==#{options[:datacenter]}") if options[:datacenter]
       filter.push("deployment_href==#{options[:deployment]}") if options[:deployment]
       filter.push("name==#{options[:private_ip]}") if options[:name]
@@ -55,7 +64,21 @@ class RightScaleCLI
 
       @logger.debug "filter: #{filter}" if options[:debug]
 
-      @client.render(@client.clent.clouds(:id => options[:cloud]).show.instances(:filter => filter).index)
+      instances = []
+      @client.client.clouds(:id => options[:cloud]).show.instances(:filter => filter).index.each do |instance|
+        instance_href = instance.href
+        instance = instance.raw
+        instance['href'] = instance_href
+        instances.push(instance)
+      end
+      @client.render(instances, 'instances')
+    end
+
+    desc "show", "Shows attributes of a single instance."
+    option :cloud, :desc => 'The cloud to filter on.', :type => :string, :required => true
+    def show(instance_id)
+      filter = []
+      @client.render(@client.client.clouds(:id => options[:cloud]).show.instances.index(:id => instance_id).show.raw, 'instance')
     end
 
     desc "run-exec", "Runs a chef recipe or rightscript on instances of a given cloud."
