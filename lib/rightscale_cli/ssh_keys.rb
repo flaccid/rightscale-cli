@@ -67,8 +67,7 @@ class RightScaleCLI
            type: 'string',
            required: true
     def show(ssh_key_id)
-      # todo
-      # @client.client.clouds(id: options[:cloud]).show.ssh_keys(id: ssh_key_id).show
+      @client.render(@client.client.clouds(id: options[:cloud]).show.ssh_keys(id: ssh_key_id).show.raw, 'ssh_key')
     end
 
     desc 'create', 'Creates an SSH key in a cloud.'
