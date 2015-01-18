@@ -1,3 +1,11 @@
 /*.gem
 /vendor/
+/.bundle/
+/bin/nokogiri
+/bin/rake
+/bin/rubocop
+/bin/ruby-parse
+/bin/ruby-rewrite
+/bin/restclient
+/bin/thor
 
