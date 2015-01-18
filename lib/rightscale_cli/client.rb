@@ -20,55 +20,64 @@ require 'rightscale_cli/logger'
 require 'ask_pass'
 
 class RightScaleCLI
+  # Represents a RightScale CLI Client
   class Client
     attr_accessor :client
     attr_accessor :render
-    
+
     def initialize(options)
       config = RightScaleCLI::Config.new.directives
       config[:account_id] = options['account'] if options[:account]
       config[:email] = options['user'] if options[:user]
       config[:api_version] = options['api'] if options[:api]
 
-      if options['password'] || (!config[:password] && !config[:password_base64])
+      if options['password'] || \
+         (!config[:password] && \
+          !config[:password_base64] &&
+          !config[:access_token])
+        # fallback to asking for user password
         config[:password] = ask_pass
-        config[:password_base64] = nil    # set this to nil so it is not used by precedence
+        # set this to nil so it is not used by precedence
+        config[:password_base64] = nil
       end
 
       @options = options
       @client = RightApi::Client.new(config)
-      @logger = RightScaleCLI::Logger.new()
+      @logger = RightScaleCLI::Logger.new
     end
 
     def get(resource)
       result = []
-      @client.send(resource).index.each { |record|
-        result.push(record.raw)
-      }
-      return result
+      @client.send(resource).index.each { |record| result.push(record.raw) }
+      result
     end
 
     def show(resource, resource_id, *args)
       if args.count > 0
         result = []
-        records = @client.send(resource).index({ :id => resource_id }).show.send(args[0]).index
-        records.each { |record|
-          result.push(record.raw)
-        }
+        records = @client.send(resource).index(id: resource_id)
+                  .show.send(args[0]).index
+        records.each { |record| result.push(record.raw) }
         @logger.info("Resource count: #{result.count}.")
       else
-        result = @client.send(resource).index({ :id => resource_id }).show.raw
+        result = @client.send(resource).index(id: resource_id).show.raw
       end
-      return result 
+      result
     end
 
     def create(resource, params)
-      resource = @client.send("#{resource}s").create(resource => params)
+      if params[:cloud]
+        resource = @client.clouds(id: params[:cloud]).show.send("#{resource}s")
+                   .create(params)
+      else
+        resource = @client.send("#{resource}s").create(params)
+      end
       @logger.info("Created #{resource.href}.")
+      resource.href
     end
 
     def destroy(resource, resource_id)
-      resource = @client.send("#{resource}s").index({ :id => resource_id })
+      resource = @client.send("#{resource}s").index(id: resource_id)
       resource.destroy
       @logger.info("Deleted #{resource.href}.")
     end
