@@ -7,11 +7,13 @@
 :account_id: <%= @directives[:account_id] %>
 
 # There are five login mechanisms:
-
+ 
 # 0. Use the following parameters to login with your email and base64-encoded password:
 # To encode your plaintext password, use 'base64' command or similar.
+<% if @directives[:email] %>
 :email: <%= @directives[:email] %>
 :password_base64: <%= @directives[:password_base64] %>
+<% end %>
 
 # 1. Use the following parameters to login with your email and plaintext password:
 #:email: <%= @directives[:email] %>
@@ -28,8 +30,10 @@
 # 4. Use the following parameter to send an existing OAuth access token with every request:
 # To learn more about OAuth and how to obtain an access token, see
 # http://support.rightscale.com/12-Guides/03-Rightscale_API/OAuth
-#:access_token: my_token_string
+:access_token: <%= @directives[:access_token] %>
 
 # The following are optional parameters:
 :api_url: <%= @directives[:api_url] %>
 :api_version: <%= @directives[:api_version] %>
+:refresh_token: <%= @directives[:refresh_token] %>
+:token_endpoint: <%= @directives[:token_endpoint] %>
