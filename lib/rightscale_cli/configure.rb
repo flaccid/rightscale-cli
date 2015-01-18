@@ -58,6 +58,18 @@ class RightScaleCLI
       update_conf
     end
 
+    desc "oauth", "Configure the RightScale OAuth access token for the client."
+    def oauth()
+      @directives.merge!( { :access_token => ask("RightScale API access token:") })
+      update_conf
+    end
+
+    desc 'refresh', 'configure the RightScale refresh token for the client'
+    def refresh()
+      @directives.merge!( { :refresh_token => ask('RightScale API refresh token:') })
+      update_conf
+    end
+
     desc "api", "Configure the RightScale API version used by the client."
     def api()
       @directives.merge!( { :api_version => ask("RightScale API version (e.g. 1.5):") })
@@ -81,6 +93,9 @@ class RightScaleCLI
       account
       user
       password
+      # do not ask for the api access token as we'll generate this from the refresh token
+      # oauth
+      refresh
       shard
       api
       puts 'Configuration saved.'
