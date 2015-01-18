@@ -1,5 +1,5 @@
 # Author:: Chris Fordham (<chris@fordham-nagy.id.au>)
-# Copyright:: Copyright (c) 2013 Chris Fordham
+# Copyright:: Copyright (c) 2013-2015 Chris Fordham
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,12 @@
 # limitations under the License.
 
 class RightScaleCLI
+  # Represents an output factory
   class Output
     def self.render(content, root_element, options)
-     if options[:xml]
-        require "active_support/core_ext"
-        puts content.to_xml(:root => root_element)
+      if options[:xml]
+        require 'active_support/core_ext'
+        puts content.to_xml(root: root_element)
       elsif options[:json]
         require 'json'
         puts JSON.pretty_generate(content)

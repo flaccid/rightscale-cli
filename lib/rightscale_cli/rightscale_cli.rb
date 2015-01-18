@@ -25,6 +25,9 @@ require 'rightscale_cli/instances'
 require 'rightscale_cli/multi_cloud_images'
 require 'rightscale_cli/recurring_volume_attachments'
 require 'rightscale_cli/repositories'
+require 'rightscale_cli/network/networks'
+require 'rightscale_cli/network/security_groups'
+require 'rightscale_cli/refresh'
 require 'rightscale_cli/servers'
 require 'rightscale_cli/server_arrays'
 require 'rightscale_cli/server_templates'
@@ -96,8 +99,11 @@ class RightScaleCLI
     register(Deployments, 'deployments', 'deployments <command>', 'Manage deployments.')
     register(Instances, 'instances', 'instances <command>', 'Manage instances.')
     register(MultiCloudImages, 'mcis', 'mcis <command>', 'Manage MultiCloud Images.')
+    register(Networks, 'networks', 'networks <command>', 'Manage Networks.')
+    register(Refresh, 'refresh', 'refresh', 'refresh the API access token')
     register(RecurringVolumeAttachments, 're_attachments', 're-attachments <command>', 'Manage recurring volume/snapshot attachments to servers.')
     register(Repositories, 'repositories', 'repositories <command>', 'Manage (Chef) Repositories.')
+    register(SecurityGroups, 'sec_groups', 'sec-groups <command>', 'Manage security groups.')
     register(Servers, 'servers', 'servers <command>', 'Manage servers.')
     register(ServerTemplates, 'server_templates', 'server-templates <command>', 'Manage ServerTemplates.')
     register(SSHKeys, 'ssh_keys', 'ssh_keys <command>', 'Manage cloud SSH keys.')

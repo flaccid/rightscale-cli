@@ -1,5 +1,5 @@
 # Author:: Chris Fordham (<chris@fordham-nagy.id.au>)
-# Copyright:: Copyright (c) 2013 Chris Fordham
+# Copyright:: Copyright (c) 2013-2015 Chris Fordham
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,26 +19,56 @@ require 'rightscale_cli/logger'
 require 'rightscale_cli/client'
 
 class RightScaleCLI
+  # Represents Storage Volumes
   class Volumes < Thor
     namespace :volumes
 
     def initialize(*args)
       super
       @client = RightScaleCLI::Client.new(options)
-      @logger = RightScaleCLI::Logger.new()
+      @logger = RightScaleCLI::Logger.new
     end
 
-    # include render options
-    eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
-    
-    desc "list", "Lists volumes, optionally with filter by datacenter, description, name, parent volume snapshot or resource UID."
-    option :cloud, :desc => "The cloud to query for volumes in.", :type => :string, :required => true
-    option :datacenter, :desc => "The href of the Datacenter / Zone the Volume is in.", :type => :string, :required => false
-    option :description, :desc => "The description of the Volume to filter on.", :type => :string, :required => false
-    option :name, :desc => "The name of the Volume to filter on.", :type => :string, :required => false
-    option :parent, :desc => "The href of the snapshot from which the volume was created.", :type => :string, :required => false
-    option :resource_uid, :desc => "Resource Unique IDentifier for the Volume to filter on.", :type => :string, :required => false
-    def list()
+    class_option :xml,
+                 type: :boolean,
+                 default: false,
+                 aliases: '-X',
+                 required: false,
+                 desc: 'returns xml'
+    class_option :json,
+                 type: :boolean,
+                 default: false,
+                 aliases: '-J',
+                 required: false,
+                 desc: 'returns json'
+
+    desc 'list', 'lists volumes, optionally with filter by datacenter, ' \
+      'description, name, parent volume snapshot or resource UID'
+    option :cloud,
+           desc: 'the cloud to query for volumes in',
+           type: :string,
+           required: true
+    option :datacenter,
+           desc: 'the href of the datacenter / zone the volume is in',
+           type: :string,
+           required: false
+    option :description,
+           desc: 'the description of the Volume to filter on',
+           type: :string,
+           required: false
+    option :name,
+           desc: 'the name of the Volume to filter on',
+           type: :string,
+           required: false
+    option :parent,
+           desc: 'the href of the snapshot from which the volume was created',
+           type: :string,
+           required: false
+    option :resource_uid,
+           desc: 'a resource unique identifier for the volume to filter on',
+           type: :string,
+           required: false
+    def list
       filter = []
       filter.push("datacenter_href==/api/clouds/#{options[:cloud]}/datacenters/#{options[:datacenter]}") if options[:datacenter]
       filter.push("description==#{options[:description]}") if options[:description]
@@ -49,20 +79,25 @@ class RightScaleCLI
       @logger.debug "filter: #{filter}" if options[:debug]
 
       volumes = []
-      @client.client.clouds(:id => options[:cloud]).show.volumes(:filter => filter).index.each { |volume|
+      @client.client.clouds(id: options[:cloud])
+        .show.volumes(filter: filter).index.each do |volume|
         volumes.push(volume.raw)
-      }
+      end
 
       @client.render(volumes, 'volumes')
     end
 
-    desc "show", "Shows a volume."
-    option :cloud, :desc => "The cloud to query for volumes in.", :type => :string, :required => true
+    desc 'show', 'shows a single volume'
+    option :cloud,
+           desc: 'the cloud to query for volumes in',
+           type: :string,
+           required: true
     def show(volume_id)
-      @client.render(@client.client.clouds(:id => options[:cloud]).show.volumes(:id => volume_id).show.raw, 'volume')
+      @client.render(@client.client.clouds(id: options[:cloud])
+        .show.volumes(id: volume_id).show.raw, 'volume')
     end
 
-    def self.banner(task, namespace = true, subcommand = false)
+    def self.banner(task, _namespace = true, subcommand = false)
       "#{basename} #{task.formatted_usage(self, true, subcommand)}"
     end
   end

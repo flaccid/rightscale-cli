@@ -17,7 +17,7 @@
 require 'thor'
 require 'yaml'
 require 'json'
-require "active_support/core_ext"
+require 'active_support/core_ext/object/blank'
 require 'rightscale_cli/logger'
 require 'rightscale_cli/client'
 

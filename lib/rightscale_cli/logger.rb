@@ -18,15 +18,17 @@ require 'logger'
 require 'rightscale_cli/config'
 
 class RightScaleCLI
+  # Represents a RightScale CLI Logger
   class Logger
     attr_accessor :log
-    
-    def initialize(*args)
+
+    def initialize(*)
       @log_init_msg = 'Initializing Logging using '
 
       if ENV['RIGHT_API_CLIENT_LOG']
-        if File.exists?(ENV['RIGHT_API_CLIENT_LOG'])
-          file = File.open(ENV['RIGHT_API_CLIENT_LOG'], File::WRONLY | File::APPEND)
+        if File.exist?(ENV['RIGHT_API_CLIENT_LOG'])
+          file = File.open(ENV['RIGHT_API_CLIENT_LOG'],
+                           File::WRONLY | File::APPEND)
         else
           file = ENV['RIGHT_API_CLIENT_LOG']
         end
@@ -38,14 +40,14 @@ class RightScaleCLI
       end
     end
 
-    def init_message()
+    def init_message
       @log.info @log_init_msg
     end
 
     def info(msg)
       @log.info msg
     end
-    
+
     def debug(msg)
       @log.debug msg
     end
