@@ -15,6 +15,7 @@
 # limitations under the License.
 
 module RightApi
+  # Client monkey patch to read API connection properties
   class Client
     attr_reader :api_version, :api_url, :account_id
   end
