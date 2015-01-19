@@ -20,6 +20,7 @@ require 'rightscale_cli/client'
 require 'rightscale_cli/config'
 require 'net/https'
 require 'uri'
+require 'json'
 
 class RightScaleCLI
   # Represents an API token refresh
@@ -30,26 +31,29 @@ class RightScaleCLI
       super
       # @client = RightScaleCLI::Client.new(options)
       @logger = RightScaleCLI::Logger.new
-      @config = RightScaleCLI::Config.new.directives
+      @config = RightScaleCLI::Config.new
+      @directives = @config.directives
     end
 
     desc 'token', 'refresh the api token' \
       'description, name, parent volume snapshot or resource UID (default)'
     def token
-      token_endpoint = @config[:token_endpoint]
-      refresh_token = @config[:refresh_token]
-      puts refresh_token
-      puts token_endpoint
+      token_endpoint = @directives[:token_endpoint]
+      refresh_token = @directives[:refresh_token]
+      @logger.info "Requesting API token from #{token_endpoint}"
       uri = URI.parse(token_endpoint)
       https = Net::HTTP.new(uri.host, uri.port)
-      https.set_debug_output($stdout)
+      https.set_debug_output($stdout) if options[:debug]
       https.use_ssl = true
       request = Net::HTTP::Post.new(uri.path)
       request['X-API-Version'] = '1.5'
       request.set_form_data(grant_type: 'refresh_token',
                             refresh_token: refresh_token)
       response = https.request(request)
-      puts response.body
+      access_token = JSON.parse(response.body)['access_token']
+      @directives[:access_token] = access_token
+      File.open(@config.config_path, 'w') {|f| f.write(ERB.new(IO.read(@config.template_path)).result(binding)) }
+      @logger.info 'API token refreshed.'
     end
 
     def self.banner(task, _namespace = true, subcommand = false)

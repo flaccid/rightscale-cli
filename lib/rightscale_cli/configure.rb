@@ -20,6 +20,7 @@ require 'rightscale_cli/config'
 require 'rightscale_cli/logger'
 require 'rightscale_cli/client'
 require 'ask_pass'
+require 'yesno'
 require 'erb'
 require "base64"
 
@@ -78,7 +79,8 @@ class RightScaleCLI
 
     desc "shard", "Configure the RightScale shard used by the client."
     def shard()
-      @directives.merge!( { :api_url => "https://#{ask("RightScale shard (e.g. us-4.rightscale.com):")}" })
+      shard = ask("RightScale shard (e.g. us-4.rightscale.com):")
+      @directives.merge!( { :api_url => "https://#{shard}", :token_endpoint => "https://#{shard}/api/oauth2" })
       update_conf
     end
 
@@ -99,6 +101,12 @@ class RightScaleCLI
       shard
       api
       puts 'Configuration saved.'
+      if @directives[:refresh_token]
+        puts 'Refresh API token now? (y/n):'
+        if yesno
+          system 'rs refresh token'
+        end
+      end
     end
 
     #default_task :all
