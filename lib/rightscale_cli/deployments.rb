@@ -18,44 +18,61 @@ require 'thor'
 require 'yaml'
 require 'rightscale_cli/client'
 require 'rightscale_cli/logger'
+require 'rightscale_cli/config'
+require 'deployment_cat'
+require 'right_api_client'
 
 class RightScaleCLI
+  # Represents RightScale Deployments
   class Deployments < Thor
     namespace :deployments
 
     def initialize(*args)
       super
       @client = RightScaleCLI::Client.new(options)
-      @logger = RightScaleCLI::Logger.new()
+      @logger = RightScaleCLI::Logger.new
+      @config = RightScaleCLI::Config.new.directives
     end
 
-    # include render options
-    eval(IO.read("#{File.dirname(File.expand_path(__FILE__))}/render_options.rb"), binding)
+    class_option :xml,
+                 type: :boolean,
+                 default: false,
+                 aliases: '-X',
+                 required: false,
+                 desc: 'returns xml'
+    class_option :json,
+                 type: :boolean,
+                 default: false,
+                 aliases: '-J',
+                 required: false,
+                 desc: 'returns json'
 
-    desc "list", "Lists all deployments."
-    def list()
+    desc 'list', 'Lists all deployments'
+    def list
       @client.render(@client.get('deployments'), 'deployments')
     end
 
-    desc "create", "Creates a deployment."
+    desc 'create', 'Creates a deployment'
     def create(name, description)
-      @client.create('deployment', { :name => name, :description => description })
+      @client.create('deployment', name: name, description: description)
     end
 
-    desc "destroy", "Deletes a deployment."
+    desc 'destroy', 'Deletes a deployment'
     def destroy(deployment_id)
       @client.destroy('deployment', deployment_id)
     end
 
-    desc "servers", "Lists servers in a deployment."
+    desc 'servers', 'Lists servers in a deployment'
     def servers(deployment)
       @logger.info("Retrieving all servers in deployment, #{deployment}...")
-      @client.render(@client.show('deployments', deployment, 'servers'), 'servers')
+      @client.render(@client.show('deployments', deployment, 'servers'),
+                     'servers')
     end
 
-    desc "terminate", "Terminates all servers in a deployment."
+    desc 'terminate', 'Terminates all servers in a deployment'
     def terminate(deployment_id)
-      @client.client.deployments.index(:id=> deployment_id).show.servers.index.each do |server|
+      @client.client.deployments.index(id: deployment_id)
+        .show.servers.index.each do |server|
         unless server.state == 'inactive'
           @logger.info "Terminating #{server.href} (state: #{server.state}.)"
           server.terminate
@@ -63,7 +80,14 @@ class RightScaleCLI
       end
     end
 
-    def self.banner(task, namespace = true, subcommand = false)
+    desc 'export', 'Exports a deployment into a CAT file'
+    def export(deployment_id)
+      @config[:timeout] = nil
+      @client = RightApi::Client.new(@config)
+      deployment_to_cat_file @client, deployment_id, nil, nil
+    end
+
+    def self.banner(task, _namespace = true, subcommand = false)
       "#{basename} #{task.formatted_usage(self, true, subcommand)}"
     end
   end
