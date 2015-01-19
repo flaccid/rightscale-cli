@@ -75,6 +75,10 @@ Add a security group to a VPC network in AP-Tokyo for access to the RightScale C
 
     $ rs sec-groups create_rs_mgmt --cloud=5 9IPAD59DMD22V
 
+Export a deployment to a CAT/RCL file (RightScale Self Service)
+
+    $ rs deployments export 491943001
+
 ## License and Authors
 
 * Author:: Chris Fordham <chris [at] fordham [hyphon] nagy [dot] id [dot] au>
