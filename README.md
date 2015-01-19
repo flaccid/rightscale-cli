@@ -51,6 +51,8 @@ This can easily be done interactively with the tool once installed:
 
     $ rs configure all
 
+If your account uses SSO/OAuth, just press enter when being asked for username and password; enter your API refresh token when prompted.
+
 Or, manually setup `~/.rightscale/right_api_client.yml` with your RightScale credentials.
 Ensure the correct shard for your account is set with `:api_url`.
 An example file is available, https://github.com/rightscale/right_api_client/blob/master/config/login.yml.example.
