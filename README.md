@@ -59,7 +59,7 @@ An example file is available, https://github.com/rightscale/right_api_client/blo
 
 ## Usage
 
-There is one command, `rs`.
+There is one command, `rs`. For convenience, `rightscale` is also provided.
 
  * For a list of commands, type `rs help`
  * For a list of subcommands, type `rs <namespace> help`, e.g. `rs arrays help`
