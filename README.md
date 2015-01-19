@@ -69,6 +69,10 @@ List all clouds within your account:
 
     $ rs clouds list
 
+Add a security group to a VPC network in AP-Tokyo for access to the RightScale CMP:
+
+    $ rs sec-groups create_rs_mgmt --cloud=5 9IPAD59DMD22V
+
 ## License and Authors
 
 * Author:: Chris Fordham <chris [at] fordham [hyphon] nagy [dot] id [dot] au>
